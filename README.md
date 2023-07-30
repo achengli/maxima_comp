@@ -15,3 +15,4 @@ provides.
 ---
 Please, be free to make pull request if you have any idea or enhancement that
 could be positive to the project.
+...
