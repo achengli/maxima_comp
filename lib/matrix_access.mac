@@ -1,11 +1,30 @@
+/* 
+ * Copyright (c) 2023 Yassin Achengli
+ * 
+ * This program is free software: you can redistribute it and/or modify  
+ * it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Alter the column of a matrix. */
 mextra_set_column(mat,c,col_val):= block([m: transpose(mat)],
     if not matrixp(mat) then
         error("The entered `mat` value is not a valid matrix."), return(false),
     m[c]: col_val,
     transpose(m))$
 
+/* Extract the `c` column of a matrix. */
 mextra_col(mat,c):= transpose(transpose(mat)[c])$
 
+/* Returns random matrix. The randomization uses a normal distribution. */
 mextra_random_matrix(n,m):= block([mat: matrix([])],
     if not (integerp(n) and integerp(m) and m >= 1 and n >= 1) then
         error("The entered scalars `m` and `n` are not valid scalar dimension"),
@@ -14,6 +33,7 @@ mextra_random_matrix(n,m):= block([mat: matrix([])],
             mat[i][j]: random(),
     return(mat))$
 
+/* Sub minor matrix. */
 mextra_minor_matrix(mat,from_row,to_row,from_col,to_col):= block(
         [m: matrix([])],
         if not matrixp(mat) then 
@@ -28,6 +48,7 @@ mextra_minor_matrix(mat,from_row,to_row,from_col,to_col):= block(
                 m[i-from_row+1][j-from_col+1]: mat[i][j],
         m)$
 
+/* Functional reducer applied to a matrix. */
 mextra_reduce(lambda_fn, mat):= block([acum: 0.0], 
     for i in mat do
         for j in i do
@@ -36,9 +57,10 @@ mextra_reduce(lambda_fn, mat):= block([acum: 0.0],
 
 mextra_sum(mat):= mextra_reduce(lambda([acum,x], acum + x),mat)$
 mextra_sub(mat):= mextra_reduce(lambda([acum,x], acum - x),mat)$
-
 mextra_mod(mat):= mat / mextra_sum(mat)$
 
+/* Filter elements from a matrix which satisfies the lambda_fn function and then
+puts all together inside a vector. */
 mextra_filter(lambda_fn, mat):= block([ret: [], mat_size: matrix_size(mat)], 
     for i: 1 thru mat_size[1] do
         for j: 1 thru mat_size[2] do
@@ -49,13 +71,19 @@ mextra_lower_than(shirt, mat):= mextra_filter(lambda([x], x < shirt), mat)$
 mextra_lower_than(shirt, mat):= mextra_filter(lambda([x], x > shirt), mat)$
 mextra_equal_to(val, mat):= mextra_filter(lambda([x], x < val), mat)$
 
+/* Reshape a matrix, convers a n'xm' matrix to a nxm one. */
 mextra_reshape(mat,n,m):= block([ret: matrix([]), mat_size: matrix_size(mat)],
     if n*m > mat_size[1] * mat_size[2] then
         error("Sizes mismatch"),
         else if (n < 1 or m < 1) or not (integerp(n) and integerp(n))then
             error("n and m must be positive integers greater than 0"),
+    mat: zeromatrix(n,m),
+    for i: 1 thru n do
+        for j: 1 thru m do
+            ret[i][j]: mat[floor(i / mat_size[1])+1, mod(j,mat_size[1])+1],
+    ret);
 
-
+/* Gram-Schmidt ortogonalization algorithm. Each column constitutes a vector. */
 mextra_gramschmidt(mat) := block([orto: matrix([]), mat_size: matrix_size(mat),
     vk: [], acum: 0.0],
     if not (mat_size[1] = mat_size[2]) then
@@ -69,3 +97,5 @@ mextra_gramschmidt(mat) := block([orto: matrix([]), mat_size: matrix_size(mat),
                         mextra_col(orto,j),
         mextra_set_column(orto,i,vk - acum),
     orto);
+
+mextra_access_p: true;
