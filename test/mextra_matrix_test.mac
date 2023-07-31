@@ -1,0 +1,8 @@
+load("mextra_matrix.mac")$
+m: apply(matrix, [[3,43,3],[23,38,99],[1,-21,3]]);
+
+print("Before column alter.")$
+print(m);
+m: mextra_set_column(m,2,[1,1,1])$
+print("After column alter.")$
+print(m);

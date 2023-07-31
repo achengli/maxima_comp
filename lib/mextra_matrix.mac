@@ -17,7 +17,7 @@
 /* Alter the column of a matrix. */
 mextra_set_column(mat,c,col_val):= block([m: transpose(mat)],
     if not matrixp(mat) then
-        error("The entered `mat` value is not a valid matrix."), return(false),
+        (error("The entered `mat` value is not a valid matrix."), return(false)),
     m[c]: col_val,
     transpose(m))$
 
@@ -37,10 +37,10 @@ mextra_random_matrix(n,m):= block([mat: matrix([])],
 mextra_minor_matrix(mat,from_row,to_row,from_col,to_col):= block(
         [m: matrix([])],
         if not matrixp(mat) then 
-            error("`mat` input is not a valid matrix"),
-            else if not (integerp(from_row) and integerp(to_row) and
+            error("`mat` input is not a valid matrix")
+            else if (not (integerp(from_row) and integerp(to_row) and
                 integerp(from_col) and integerp(to_col)) or from_row < 1 or
-                to_row < 1 or from_col < 1 or to_col < 1 then
+                to_row < 1 or from_col < 1 or to_col < 1) then
                 error("from and to row and column inputs must be integers from 1 to `mat` size."),
         m: zeromatrix(to_row - from_row, to_col - from_col),
         for i:from_row thru to_row do
@@ -64,7 +64,8 @@ puts all together inside a vector. */
 mextra_filter(lambda_fn, mat):= block([ret: [], mat_size: matrix_size(mat)], 
     for i: 1 thru mat_size[1] do
         for j: 1 thru mat_size[2] do
-            if not lambda_fn(mat[i][j]) then ret: append(ret,[mat[i][j]),
+            if (not lambda_fn(mat[i][j])) then 
+                ret: append(ret,[mat[i][j]]),
     ret)$
 
 mextra_lower_than(shirt, mat):= mextra_filter(lambda([x], x < shirt), mat)$
@@ -74,8 +75,8 @@ mextra_equal_to(val, mat):= mextra_filter(lambda([x], x < val), mat)$
 /* Reshape a matrix, convers a n'xm' matrix to a nxm one. */
 mextra_reshape(mat,n,m):= block([ret: matrix([]), mat_size: matrix_size(mat)],
     if n*m > mat_size[1] * mat_size[2] then
-        error("Sizes mismatch"),
-        else if (n < 1 or m < 1) or not (integerp(n) and integerp(n))then
+        error("Sizes mismatch")
+        else if ((n < 1 or m < 1) or not (integerp(n) and integerp(n))) then
             error("n and m must be positive integers greater than 0"),
     mat: zeromatrix(n,m),
     for i: 1 thru n do
@@ -90,12 +91,12 @@ mextra_gramschmidt(mat) := block([orto: matrix([]), mat_size: matrix_size(mat),
         error("`mat` must be square."),
     orto: zeromatrix(mat_size[1],mat_size[2]),
     for i: 1 thru mat_size[2] do
-        acum: 0.0,
+        (acum: 0.0,
         vk: mextra_col(mat,i),
         for j: 1 thru i-1 do
             acum: acum + ((transpose(vk) . mextra_col(orto,j)) / mextra_mod(mextra_col(orto,j))) *
                         mextra_col(orto,j),
-        mextra_set_column(orto,i,vk - acum),
+        mextra_set_column(orto,i,vk - acum)),
     orto);
 
 mextra_access_p: true;
