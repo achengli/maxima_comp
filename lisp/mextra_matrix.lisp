@@ -1,6 +1,6 @@
 ;;; -*- Mode: Lisp; package:maxima; syntax:common-lisp ;Base: 10 -*- ;;;
 
-; Translated on: 2023-07-31 12:05:04+02:00
+; Translated on: 2023-08-01 13:39:35+02:00
 ; Maxima version: 5.47.0
 ; Lisp implementation: ECL
 ; Lisp version: 21.2.1
@@ -18,19 +18,33 @@
 (in-package :maxima)
 
 (progn
- (defprop $mextra_set_column t translated)
- (add2lnc '$mextra_set_column $props)
- (defmtrfun ($mextra_set_column $any mdefine nil nil)
+ (defprop $mextra_set_col t translated)
+ (add2lnc '$mextra_set_col $props)
+ (defmtrfun ($mextra_set_col $any mdefine nil nil)
       ($mat $c $col_val)
     (declare (special $col_val $c $mat))
     ((lambda ($m)
        (declare (special $m))
        (prog ()
          (cond
-          ((not ($matrixp $mat))
-           (simplify ($error "The entered `mat` value is not a valid matrix."))
+          ((not ($matrixp $mat)) (simplify ($error "mat must be a matrix."))
            (return nil)))
-         (marrayset $col_val $m $c)
+         (cond
+          (($matrixp $col_val)
+           (cond
+            ((like
+              (marrayref 'mqapply
+                         (simplify (mfunction-call $matrix_size $col_val))
+                         1.)
+              (marrayref 'mqapply
+                         (simplify (mfunction-call $matrix_size $mat))
+                         1.))
+             (marrayset
+              (marrayref 'mqapply (simplify ($transpose $col_val)) 1.)
+              $m
+              $c))
+            (t (marrayset (marrayref $col_val 1.) $m $c))))
+          (($listp $col_val) (marrayset $col_val $m $c)))
          (return (simplify ($transpose $m)))))
      (simplify ($transpose $mat)))
     ))
@@ -52,10 +66,10 @@
     ((lambda ($mat)
        (declare (special $mat))
        (prog ()
-         (let (tr-gensym10)
+         (let (tr-gensym12)
            (cond
             ((eq t
-                 (setq tr-gensym10
+                 (setq tr-gensym12
                          (mcond-boole-verify
                           (mnot_tr
                            (mcond-boole-verify
@@ -66,9 +80,9 @@
              (simplify
               ($error
                "The entered scalars `m` and `n` are not valid scalar dimension")))
-            ((not (null tr-gensym10))
+            ((not (null tr-gensym12))
              (list* '(mcond)
-                    tr-gensym10
+                    tr-gensym12
                     (mapcar #'mcond-eval-symbols-tr
                             '((($error (30. "mextra_matrix.mac" src))
                                "The entered scalars `m` and `n` are not valid scalar dimension")
@@ -95,12 +109,12 @@
     (declare (special $to_col $from_col $to_row $from_row $mat))
     ((lambda ($m)
        (declare (special $m))
-       (let (tr-gensym11)
+       (let (tr-gensym13)
          (cond
           ((not ($matrixp $mat))
            (simplify ($error "`mat` input is not a valid matrix")))
           ((eq t
-               (setq tr-gensym11
+               (setq tr-gensym13
                        (mcond-boole-verify
                         (mor_tr
                          (not
@@ -115,9 +129,9 @@
            (simplify
             ($error
              "from and to row and column inputs must be integers from 1 to `mat` size.")))
-          ((not (null tr-gensym11))
+          ((not (null tr-gensym13))
            (list* '(mcond)
-                  tr-gensym11
+                  tr-gensym13
                   (mapcar #'mcond-eval-symbols-tr
                           '((($error (44. "mextra_matrix.mac" src))
                              "from and to row and column inputs must be integers from 1 to `mat` size.")
@@ -154,20 +168,32 @@
     (declare (special $mat $lambda_fn))
     ((lambda ($acum)
        (declare (special $acum))
-       (do (($i)
-            (mdo (cdr $mat) (cdr mdo)))
-           ((null mdo) '$done)
-         (declare (special $i))
-         (setq $i (car mdo))
-         (do (($j)
-              (mdo (cdr $i) (cdr mdo)))
+       (cond
+        (($matrixp $mat)
+         (do (($i)
+              (mdo (cdr $mat) (cdr mdo)))
              ((null mdo) '$done)
-           (declare (special $j))
-           (setq $j (car mdo))
+           (declare (special $i))
+           (setq $i (car mdo))
+           (do (($j)
+                (mdo (cdr $i) (cdr mdo)))
+               ((null mdo) '$done)
+             (declare (special $j))
+             (setq $j (car mdo))
+             (let ()
+               (declare (special $acum))
+               (if (not (boundp '$acum)) (add2lnc '$acum $values))
+               (setq $acum (simplify (mfuncall $lambda_fn $acum $j)))))))
+        (($listp $mat)
+         (do (($i)
+              (mdo (cdr $mat) (cdr mdo)))
+             ((null mdo) '$done)
+           (declare (special $i))
+           (setq $i (car mdo))
            (let ()
              (declare (special $acum))
              (if (not (boundp '$acum)) (add2lnc '$acum $values))
-             (setq $acum (simplify (mfuncall $lambda_fn $acum $j))))))
+             (setq $acum (simplify (mfuncall $lambda_fn $acum $i)))))))
        $acum)
      0.0)
     ))
@@ -223,10 +249,10 @@
                  (simplify (list '(mgreaterp) $j (marrayref $mat_size 2.)))))
               '$done)
            (declare (special $j))
-           (let (tr-gensym12)
+           (let (tr-gensym15)
              (cond
               ((eq t
-                   (setq tr-gensym12
+                   (setq tr-gensym15
                            (mcond-boole-verify
                             (mnot_tr
                              (mcond-boole-eval
@@ -244,16 +270,16 @@
                                         (marrayref 'mqapply
                                                    (marrayref $mat $i)
                                                    $j))))))
-              ((not (null tr-gensym12))
+              ((not (null tr-gensym15))
                (list* '(mcond)
-                      tr-gensym12
+                      tr-gensym15
                       (mapcar #'mcond-eval-symbols-tr
-                              '(((msetq (68. "mextra_matrix.mac" src)) $ret
-                                 (($append (68. "mextra_matrix.mac" src)) $ret
-                                  ((mlist (68. "mextra_matrix.mac" src))
+                              '(((msetq (72. "mextra_matrix.mac" src)) $ret
+                                 (($append (72. "mextra_matrix.mac" src)) $ret
+                                  ((mlist (72. "mextra_matrix.mac" src))
                                    ((mqapply array
-                                     (68. "mextra_matrix.mac" src))
-                                    (($mat array (68. "mextra_matrix.mac" src))
+                                     (72. "mextra_matrix.mac" src))
+                                    (($mat array (72. "mextra_matrix.mac" src))
                                      $i)
                                     $j))))
                                 t $false))))))))
@@ -307,37 +333,37 @@
     (declare (special $m $n $mat))
     ((lambda ($ret $mat_size)
        (declare (special $mat_size $ret))
-       (let (tr-gensym13)
+       (let (tr-gensym16)
          (cond
           ((eq t
-               (setq tr-gensym13
+               (setq tr-gensym16
                        (mcond-boole-verify
                         (mgrp (mul* $n $m)
                               (mul* (marrayref $mat_size 1.)
                                     (marrayref $mat_size 2.))))))
-           (simplify ($error "Sizes mismatch")))
-          ((not (null tr-gensym13))
+           (simplify ($error "Size mismatch")))
+          ((not (null tr-gensym16))
            (list* '(mcond)
-                  tr-gensym13
+                  tr-gensym16
                   (mapcar #'mcond-eval-symbols-tr
-                          '((($error (78. "mextra_matrix.mac" src))
-                             "Sizes mismatch")
+                          '((($error (82. "mextra_matrix.mac" src))
+                             "Size mismatch")
                             t
-                            ((mcond (79. "mextra_matrix.mac" src))
-                             ((mor (79. "mextra_matrix.mac" src))
-                              ((mor (79. "mextra_matrix.mac" src))
-                               ((mlessp (79. "mextra_matrix.mac" src)) $n 1.)
-                               ((mlessp (79. "mextra_matrix.mac" src)) $m 1.))
-                              ((mnot (79. "mextra_matrix.mac" src))
-                               ((mand (79. "mextra_matrix.mac" src))
-                                (($integerp (79. "mextra_matrix.mac" src)) $n)
-                                (($integerp (79. "mextra_matrix.mac" src))
+                            ((mcond (83. "mextra_matrix.mac" src))
+                             ((mor (83. "mextra_matrix.mac" src))
+                              ((mor (83. "mextra_matrix.mac" src))
+                               ((mlessp (83. "mextra_matrix.mac" src)) $n 1.)
+                               ((mlessp (83. "mextra_matrix.mac" src)) $m 1.))
+                              ((mnot (83. "mextra_matrix.mac" src))
+                               ((mand (83. "mextra_matrix.mac" src))
+                                (($integerp (83. "mextra_matrix.mac" src)) $n)
+                                (($integerp (83. "mextra_matrix.mac" src))
                                  $n))))
-                             (($error (80. "mextra_matrix.mac" src))
+                             (($error (84. "mextra_matrix.mac" src))
                               "n and m must be positive integers greater than 0")
                              t $false)))))
           ((eq t
-               (setq tr-gensym13
+               (setq tr-gensym16
                        (mcond-boole-verify
                         (mor_tr
                          (mcond-boole-verify
@@ -346,11 +372,11 @@
                          (not (and ($integerp $n) ($integerp $n)))))))
            (simplify
             ($error "n and m must be positive integers greater than 0")))
-          ((not (null tr-gensym13))
+          ((not (null tr-gensym16))
            (list* '(mcond)
-                  tr-gensym13
+                  tr-gensym16
                   (mapcar #'mcond-eval-symbols-tr
-                          '((($error (80. "mextra_matrix.mac" src))
+                          '((($error (84. "mextra_matrix.mac" src))
                              "n and m must be positive integers greater than 0")
                             t $false))))))
        (let ()
@@ -384,60 +410,21 @@
      (simplify (mfunction-call $matrix_size $mat)))
     ))
 (progn
- (defprop $mextra_gramschmidt t translated)
- (add2lnc '$mextra_gramschmidt $props)
- (defmtrfun ($mextra_gramschmidt $any mdefine nil nil)
+ (defprop $mextra_abs t translated)
+ (add2lnc '$mextra_abs $props)
+ (defmtrfun ($mextra_abs $any mdefine nil nil)
       ($mat)
     (declare (special $mat))
-    ((lambda ($orto $mat_size $vk $acum)
-       (declare (special $acum $vk $mat_size $orto))
-       (cond
-        ((not (like (marrayref $mat_size 1.) (marrayref $mat_size 2.)))
-         (simplify ($error "`mat` must be square."))))
-       (let ()
-         (declare (special $orto))
-         (if (not (boundp '$orto)) (add2lnc '$orto $values))
-         (setq $orto
-                 (simplify
-                  ($zeromatrix (marrayref $mat_size 1.)
-                               (marrayref $mat_size 2.)))))
-       (do (($i 1. (+ 1. $i)))
-           ((let (($prederror t))
-              ($is-boole-eval
-               (simplify (list '(mgreaterp) $i (marrayref $mat_size 2.)))))
-            '$done)
-         (declare (special $i))
-         (let ()
-           (declare (special $acum))
-           (if (not (boundp '$acum)) (add2lnc '$acum $values))
-           (setq $acum 0.0))
-         (let ()
-           (declare (special $vk))
-           (if (not (boundp '$vk)) (add2lnc '$vk $values))
-           (setq $vk (simplify ($mextra_col $mat $i))))
-         (do (($j 1. (+ 1. $j)))
-             ((let (($prederror t))
-                ($is-boole-eval (simplify (list '(mgreaterp) $j (+ $i -1.)))))
-              '$done)
-           (declare (special $j))
-           (let ()
-             (declare (special $acum))
-             (if (not (boundp '$acum)) (add2lnc '$acum $values))
-             (setq $acum
-                     (add* $acum
-                           (mul*
-                            (div
-                             (ncmul2 (simplify ($transpose $vk))
-                                     (simplify ($mextra_col $orto $j)))
-                             (simplify
-                              ($mextra_mod (simplify ($mextra_col $orto $j)))))
-                            (simplify ($mextra_col $orto $j)))))))
-         (simplify ($mextra_set_column $orto $i (add* $vk (*mminus $acum)))))
-       $orto)
-     (simplify ($matrix '((mlist))))
-     (simplify (mfunction-call $matrix_size $mat)) '((mlist)) 0.0)
+    (simplify
+     (list '(%sqrt)
+           (simplify
+            ($mextra_reduce
+             (m-tlambda ($acum $x)
+                        (declare (special $x $acum))
+                        (add* $acum (power $x 2.)))
+             $mat))))
     ))
 (let ()
-  (declare (special $mextra_access_p))
-  (if (not (boundp '$mextra_access_p)) (add2lnc '$mextra_access_p $values))
-  (defparameter $mextra_access_p t))
+  (declare (special $mextra_matrix_p))
+  (if (not (boundp '$mextra_matrix_p)) (add2lnc '$mextra_matrix_p $values))
+  (defparameter $mextra_matrix_p t))
