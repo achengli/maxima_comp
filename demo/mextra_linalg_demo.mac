@@ -1,0 +1,6 @@
+load("./../lib/mextra.mac");
+M: apply(matrix, [[1,1],[1,-2]]);
+Mp: mextra_gramschmidt(M);
+
+print(M);
+print(Mp);

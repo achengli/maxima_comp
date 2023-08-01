@@ -1,0 +1,24 @@
+/* 
+ * Copyright (c) 2023 Yassin Achengli
+ * ----------------------------------
+ * - File: mextra_linalg.mac
+ * - Project: Maxima extra matrix functions.
+ * - Description: Algebraic functions.
+ * - License: GPLv3
+ */
+
+/* Gram-Schmidt ortogonalization algorithm. Each column constitutes a vector. */
+mextra_gramschmidt(mat) := block([orto: matrix([]), mat_size: matrix_size(mat),
+    vk: [], acum: 0.0],
+    orto: zeromatrix(mat_size[1],mat_size[2]),
+    for i:1 thru mat_size[2] do
+        (acum: 0.0,
+        vk: mextra_col(mat,i),
+        for j: 1 thru i-1 do
+            acum: acum + ((transpose(vk) . mextra_col(orto,j)) / 
+            (transpose(mextra_col(orto,j)) . mextra_col(orto,j)) ) * mextra_col(orto,j),
+        print(orto),
+        orto: mextra_set_col(orto,i,transpose(vk - acum))),
+    orto);
+
+mextra_linalg_p: true;
