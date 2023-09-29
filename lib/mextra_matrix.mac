@@ -73,7 +73,7 @@ mextra_filter(lambda_fn, mat):= block([ret: [], mat_size: matrix_size(mat)],
     ret);
 
 mextra_lower_than(shirt, mat):= mextra_filter(lambda([x], x < shirt), mat);
-mextra_lower_than(shirt, mat):= mextra_filter(lambda([x], x > shirt), mat);
+mextra_bigger_than(shirt, mat):= mextra_filter(lambda([x], x > shirt), mat);
 mextra_equal_to(val, mat):= mextra_filter(lambda([x], x < val), mat);
 
 /* Reshape a matrix, convers a n'xm' matrix to a nxm one. */
