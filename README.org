@@ -5,24 +5,17 @@ This repository aims to be helpful in the way as the users need to operate, mani
 The project is under the GPL version 3 license. Please consider to read the license claims before having the hands on the software that the project provides.
 #+end_verse
 
-** Functions
+#+begin_verse
+This projects is a compilation of maxima libraries.
+#+end_vers
 
-*** Linear algebra methods
-- gramsmith
-
-*** Matrix operations
-- mextra_set_col
-- mextra_col
-- mextra_random_matrix
-- mextra_minor_matrix
-- mextra_reduce
-- mextra_sum
-- mextra_sub
-- mextra_mod
-- mextra_filter
-- mextra_lower_than
-- mextra_bigger_than
-- mextra_equal_to
-- mextra_reshape
-- mextra_abs
-- mextra_matrix_p
+** Libs
+- mextra
+#+begin_quote
+  Matrix and vectors extra functions library
+#+end_quote
+- circuits
+#+begin_quote
+  Circuit signal analysis
+#+end_quote
+  

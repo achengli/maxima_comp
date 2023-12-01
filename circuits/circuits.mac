@@ -1,0 +1,19 @@
+series([x]) := block(
+[u: 0],
+for t in x do
+  u: u + t,
+  u
+)$
+
+parallel([x]) := block(
+[u: 0],
+for t in x do
+  u: u + 1/t,
+  1/u
+)$
+
+z_cap(C) := -%i/w/C$
+z_ind(L) := %i*w*L$
+lapl_cap(C) := 1/s/C$
+lapl_ind(L) := L*s$
+
