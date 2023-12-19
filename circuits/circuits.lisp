@@ -20,7 +20,16 @@
                  (setq acum `((mplus simp) ,acum ,i)))
            ($expand acum)))
 
-(defmfun $complexp (c)
-         (if (equal 0 ($imagpart c)) nil t))
+(defmfun $power_supply (V &optional &key (frec 0) (phasor false))
+         "Active circuit component that brings a voltage generator
+         which has the posibility to have alternate or DC current."
+         (let ((v nil))
+           (if phasor (setq v V)
+             (setq v (lambda (t) `((mtimes simp) ,V ($cos ((mtimes simp) 2 $%pi ,frec $t))))))
+           v))            
 
+(defmfun $resistor (R &optional &key (V 0) (i 0))
+         (let ((out '((Vr . `((mtimes simp) ,i ,R)) 
+                       (Ir . `((rat simp) ,V R)))))
+           out))
 

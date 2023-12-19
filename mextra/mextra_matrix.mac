@@ -91,4 +91,11 @@ mextra_reshape(mat,n,m):= block([ret: matrix([]), mat_size: matrix_size(mat)],
 /* Matrix norm 2. */
 mextra_abs(mat) := sqrt(mextra_reduce(lambda([acum, x], acum + x^2), mat));
 
+/* Transform matrix to string expression. */
+mextra_mat2str(mat) := block([sout: ""],
+  for i:0 thru matrix_size(mat)[1] do
+    (for j:0 thru matrix_size(mat)[2] do
+      sout: concat(sout, string(mat[i,j]), "\t")),
+      sout: concat(sout, "\n"));
+
 mextra_matrix_p: true;
