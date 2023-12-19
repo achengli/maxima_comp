@@ -1,45 +1,26 @@
 ;; Lisp circuits functions
 ;; -------
+;; Author: Yassin Achengli <achengli@github.com>
 
-;; circuit parallel impedances
-(defun parallel (&rest impedance)
-  (let ((acum 0.0))
-    (dolist (i impedance)
-      (setq acum (+ acum (if (not (listp i)) (/ 1 i)
-                   (parallel-list i)))))
-    (/ 1 acum)))
+(defmfun $parallel (&rest par)
+         "Takes a variadic number of impedances and gives the 
+         result of the parallel sum."
+         (let ((acum 0))
+           (loop for i in par do
+                 (setq acum `((mplus simp) ,acum 
+                    ((mexpt simp) ,i -1))))
+           (setq acum `((mexpt simp) ,acum -1))
+           ($expand acum)))
 
-(defun parallel-list (impedance)
-  (let ((acum .0))
-    (dolist (i impedance)
-      (setq acum  (+ acum (if (not (listp i))
-                            (/ 1 i)
-                            (parallel-list i)))))
-    (/ 1 acum)))
+(defmfun $series (&rest par)
+         "Takes a variadic number of impedances and return the 
+         result of the series sum."
+         (let ((acum (car par)))
+           (loop for i in (cdr par) do
+                 (setq acum `((mplus simp) ,acum ,i)))
+           ($expand acum)))
 
-;; circuit series impedances
-(defun series (&rest impedance)
-  (let ((acum 0.0))
-    (dolist (i impedance)
-      (setq acum (+ acum (if (not (listp i)) i
-                   (series-list i)))))
-    acum))
-
-(defun series-list (impedance)
-  (let ((acum .0))
-    (dolist (i impedance)
-      (setq acum  (+ acum (if (not (listp i))
-                            i
-                            (series-list i)))))
-    acum))
+(defmfun $complexp (c)
+         (if (equal 0 ($imagpart c)) nil t))
 
 
-;; demo
-(let ((*demo-values* (list '(123 4 34.9 334.22))))
-  (defun main()
-    (progn
-      (dolist (l *demo-values*)
-        (progn 
-          (print (series (values-list l)))
-          (print (parallel (values-list l)))))
-      (print (series *demo-values*)))))
