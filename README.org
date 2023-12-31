@@ -1,25 +1,27 @@
-#+TITLE: Maxima compilation
+#+TITLE: Compilation of Maxima libraries
 #+AUTHOR: Yassin Achengli Benmouais
 #+DESCRIPTION: 
 
 #+begin_quote
-Maxima is a ideal software to help the scientists to resolve their arithmetics and moreover to optimize their working time.
-This repository aims to be helpful in the way as the users need to operate, manipulate and transfer matrix and arrays data.
-The project is under the GPL version 3 license. Please consider to read the license claims before having the hands on the 
-software that the project provides.
+Maxima is a programming tool for scientists to resolve arithmetic and numerical problems with a symbolic language in order to improve working times and correctness.
+
+This repository aims to be helpful for various scientific topics such as algebra, kinematics, electric wires and so on.
+
+This projectc intended to be free to use and therefore it is under the version 3 of the *General Public License* _(GPLv3)_. Take a look at the license agreement before including parts of this project into another one.
 #+end_quote
 
-#+begin_verse
-This projects is a compilation of maxima libraries.
-#+end_vers
-
-** Libs
+** Individual projects on the repository
 - mextra
 #+begin_quote
   Matrix and vectors extra functions library
 #+end_quote
+
 - circuits
 #+begin_quote
   Circuit signal analysis
 #+end_quote
 
+
+#+begin_verse
+This project still in its early stage.
+#+end_verse
