@@ -7,7 +7,7 @@ Maxima is a programming tool for scientists to resolve arithmetic and numerical 
 
 This repository aims to be helpful for various scientific topics such as algebra, kinematics, electric wires and so on.
 
-This projectc intended to be free to use and therefore it is under the version 3 of the *General Public License* **(GPLv3)**. Take a look at the license agreement before including parts of this project into another one.
+This projectc intended to be free to use and therefore it is under the version 3 of the *General Public License* /(GPLv3)/. Take a look at the license agreement before including parts of this project into another one.
 #+end_quote
 
 ** Individual projects on the repository
