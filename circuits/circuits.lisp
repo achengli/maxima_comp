@@ -26,10 +26,38 @@
          (let ((v nil))
            (if phasor (setq v V)
              (setq v (lambda (t) `((mtimes simp) ,V ($cos ((mtimes simp) 2 $%pi ,frec $t))))))
-           v))            
+           v))
 
 (defmfun $resistor (R &optional &key (V 0) (i 0))
          (let ((out '((Vr . `((mtimes simp) ,i ,R)) 
                        (Ir . `((rat simp) ,V R)))))
            out))
 
+(defstruct circuit-block 
+  "`circuit-block' emulates a circuit element with the given parameters:
+
+  - `active-or-pasive' set active or pasive element (nil for pasive).
+  - `thevenin-impedance-func' is the impedance when having impedance circuits.
+  - `thevenin-admitance-func' is the same as above but for admitance circuits.
+  - `thevenin-voltage' is the Thevenin equivalent Voltage for impedance circuits.
+  - `norton-current' is the Norton theorem equivalent current for admitance circuits.
+  - `node-contection' is the point where this element is located on the circuit diagram."
+  active-or-pasive
+  thevenin-impedance-func
+  thevenin-admitance-func
+  thevenin-voltage
+  node-connection)
+
+(defstruct circuit-net
+  ""
+  node-list
+  mesh-list)
+
+(defun new-circuit-net (&key impedance-or-admitance (node-list '()) (mesh-list '()))
+  "New electric circuit net built with mesh grids and elements which are conected between
+  nodes."
+  (let ((n nil))
+    (loop for mesh in mesh-list do
+          (assert (has mesh node-list)))
+    (make-circuit-net :node-list node-list
+                      :mesh-list mesh-list)))
