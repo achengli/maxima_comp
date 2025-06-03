@@ -1,10 +1,13 @@
 /* Maxima vector manipulation library 
-* -----
+* +++
 * Yassin Achengli - Copyright (C) 2025 BY-NC
 */
 
 /*
 The three main functions for functional analysis.
+- map
+- filter
+- reduce
 */
 
 insert (v, val) := append(v, [val])$
@@ -39,6 +42,25 @@ find (v, pattern) := block ([found: []],
     if pattern (v[i]) then
       found : insert (found, i),
       found)$
+
+v_min (v) := reduce (v, lambda ([a, x], if x < a then x else a), -inf)$
+
+v_max (v) := reduce (v, lambda ([a, x], if x > a then x else a), inf)$
+
+laplace_fir (a, b) := block ([x : 0], 
+  for i : 1 thru length (a) do
+    x : x + a[i] * 's^(length(a)-i), x) / 
+  block ([x : 0], 
+    for i : 1 thru length (b) do
+      x : x + b[i] * 's^(length (b)-i), x)$
+
+laplace_iir (a) := laplace_fir (a, [1])$
+
+cont_convolution (f, g, [t]) := block ([], 
+  if emptyp (t) then
+    integrate (f ('tau) * g ('t - 'tau), 'tau, -inf, inf)
+  else
+    integrate (f ('tau) * g ('t - 'tau), 'tau, t[1], t[2]))$
 
 
 print("vector.mac was loaded")$
