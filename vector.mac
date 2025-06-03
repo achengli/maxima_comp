@@ -1,0 +1,46 @@
+/* Maxima vector manipulation library 
+* -----
+* Yassin Achengli - Copyright (C) 2025 BY-NC
+*/
+
+/*
+The three main functions for functional analysis.
+*/
+
+insert (v, val) := append(v, [val])$
+
+map (v, func) := block ([out_v: []],
+  for i : 1 thru length (v) do
+    out_v : insert (out_v, func (v[i])), out_v)$
+
+reduce (v, func, [first_value]) := block ([out_value: if emptyp(first_value) then 0 else first_value],
+  for i : 1 thru length (v) do
+    out_value : func (out_value, v[i]), out_value)$
+
+filter (v, func) := block ([out_v: []],
+  for i : 1 thru length (v) do
+    if func (v[i]) then
+      out_v : insert (out_v, v[i]), out_v)$
+
+remove (v, element, [count]) := block ([out_v : [],
+                            c : (if count > 0 then count else 1)],
+  for i : 1 thru length (v) do
+    if v[i] = element and c > 0 then
+      c : c - 1
+    else
+      out_v : insert (out_v, v[i]), out_v)$
+
+count (v, condition) := block ([c: 0],
+  for i : 1 thru length(v) do
+    if condition (v[i]) then c : c + 1, c)$
+
+find (v, pattern) := block ([found: []],
+  for i : 1 thru length (v) do
+    if pattern (v[i]) then
+      found : insert (found, i),
+      found)$
+
+
+print("vector.mac was loaded")$
+
+/* END OF vector.mac */
