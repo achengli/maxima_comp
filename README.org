@@ -2,6 +2,8 @@
 #+AUTHOR: Yassin Achengli Benmouais
 #+DESCRIPTION: 
 
+[[a.jpg]]
+
 #+begin_quote
 Maxima is a programming tool for scientists to resolve arithmetic and numerical problems with a symbolic language in order to improve working times and correctness.
 
