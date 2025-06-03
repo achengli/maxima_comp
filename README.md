@@ -1,7 +1,3 @@
----
-title: Maxima compilation
----
-
 # Maxima compilation of utilities
 ---
 ![logo](a.jpg)
