@@ -1,13 +1,7 @@
-/* Maxima vector manipulation library 
-* +++
-* Yassin Achengli - Copyright (C) 2025 BY-NC
-*/
-
-/*
-The three main functions for functional analysis.
-- map
-- filter
-- reduce
+/* Vector library for maxima
+* Copyright (C) BY-NC Yassin Achengli <achengli@github.com>
+* ---
+* This library is under BSD clause 3 license.
 */
 
 insert (v, val) := append(v, [val])$
@@ -62,7 +56,5 @@ cont_convolution (f, g, [t]) := block ([],
   else
     integrate (f ('tau) * g ('t - 'tau), 'tau, t[1], t[2]))$
 
-
-print("vector.mac was loaded")$
 
 /* END OF vector.mac */

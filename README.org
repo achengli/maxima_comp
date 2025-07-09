@@ -23,6 +23,10 @@ This projectc intended to be free to use and therefore it is under the version 3
   Circuit signal analysis
 #+end_quote
 
+- string
+#+begin_quote
+  String support for maxima
+#+end_quote
 
 #+begin_verse
 This project still in its early stage.

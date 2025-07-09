@@ -1,11 +1,11 @@
 /* 
- * Copyright (c) 2023 Yassin Achengli
+ * Copyright (C) BY-NC 2023 - 2025 Yassin Achengli <achengli@github.com>
  * ----------------------------------
  * - File: mextra_matrix.mac
  * - Project: Maxima extra matrix functions.
  * - Description: Bunch of maxima functions for matrix and array
  *                data processing.
- * - License: GPLv3
+ * - License: BSD clause 3
  */
 
 /* Alter the column of a matrix. */

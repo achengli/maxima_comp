@@ -1,6 +1,26 @@
 ;; Lisp circuits functions
 ;; -------
-;; Author: Yassin Achengli <achengli@github.com>
+;; Copyright (C) BY-NC 2025 - Yassin Achengli <achengli@github.com>
+;; This file is under BSD clause 3 license.
+
+(defstruct circuits:element
+  name
+  description
+  value
+  nodes
+  function)
+
+(defmacro circuits:new-element (&rest args)
+  (make-circuits:circuit @,args))
+
+(defstruct circuits:circuit
+  name
+  description
+  nodes
+  elements)
+
+(defmacro circuits:new-circuit (&rest args)
+  (make-circuits:circuit @,args))
 
 (defmfun $parallel (&rest par)
          "Takes a variadic number of impedances and gives the 
@@ -48,10 +68,6 @@
   thevenin-voltage
   node-connection)
 
-(defstruct circuit-net
-  ""
-  node-list
-  mesh-list)
 
 (defun new-circuit-net (&key impedance-or-admitance (node-list '()) (mesh-list '()))
   "New electric circuit net built with mesh grids and elements which are conected between
