@@ -1,0 +1,9 @@
+/*
+* Copyright (C) BY-NC 2025 - Yassin Achengli <achengli@github.com>
+* ---
+* This library is unded BSD clause 3 license.
+* If you don't want to get notifications every time you load this library, setup 
+* `string-lisp-notification-enabled' variable to nil.
+*/
+
+load("string.lisp")$
